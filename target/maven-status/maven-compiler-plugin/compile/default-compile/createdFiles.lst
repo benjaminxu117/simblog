@@ -1,8 +1,12 @@
 com\example\entity\User.class
 com\example\SimblogApplication.class
+com\example\service\impl\AsyncServiceImpl.class
 com\example\service\impl\UserServiceImpl.class
+com\example\config\ScheduleConfig.class
+com\example\service\AsyncService.class
 com\example\controller\UserController.class
 com\example\config\RedisConfig.class
+com\example\service\ScheduleService.class
 com\example\config\MybatisPlusConfig$1.class
 com\example\entity\Like.class
 com\example\mapper\UserMapper.class
@@ -16,7 +20,9 @@ com\example\mapper\LikeMapper.class
 com\example\entity\Article.class
 com\example\mapper\ArticleMapper.class
 com\example\entity\Comment.class
+com\example\controller\FileController.class
 com\example\config\DatabaseConfig.class
 com\example\service\UserService.class
 com\example\util\JwtUtil.class
+com\example\config\AsyncConfig.class
 com\example\mapper\SubscriptionMapper.class

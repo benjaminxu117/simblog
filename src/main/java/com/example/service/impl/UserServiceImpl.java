@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.entity.User;
 import com.example.mapper.UserMapper;
 import com.example.service.UserService;
+import com.example.service.AsyncService;
 import com.example.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     
     @Autowired
     private JwtUtil jwtUtil;
+    
+    @Autowired
+    private AsyncService asyncService;
     
     @Override
     public boolean register(User user) {
@@ -28,7 +32,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 密码加密
         user.setPassword(DigestUtils.md5DigestAsHex(user.getPassword().getBytes()));
         
-        return this.save(user);
+        boolean result = this.save(user);
+        
+        if (result) {
+            // 异步发送欢迎邮件
+            asyncService.sendEmailAsync(
+                user.getEmail(), 
+                "欢迎注册SimBlog", 
+                "感谢您注册SimBlog，祝您使用愉快！"
+            );
+            
+            // 异步记录用户注册行为
+            asyncService.logUserActionAsync(user.getId(), "register", "用户注册");
+        }
+        
+        return result;
     }
     
     @Override
@@ -38,6 +56,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         User user = this.getOne(queryWrapper);
         
         if (user != null && user.getPassword().equals(DigestUtils.md5DigestAsHex(password.getBytes()))) {
+            // 异步记录用户登录行为
+            asyncService.logUserActionAsync(user.getId(), "login", "用户登录");
+            
             return jwtUtil.generateToken(user.getId().toString());
         }
         
@@ -55,6 +76,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public boolean updateUserInfo(User user) {
         // 不允许更新密码
         user.setPassword(null);
-        return this.updateById(user);
+        boolean result = this.updateById(user);
+        
+        if (result) {
+            // 异步记录用户信息更新行为
+            asyncService.logUserActionAsync(user.getId(), "update_profile", "更新用户信息");
+        }
+        
+        return result;
     }
 } 
