@@ -15,10 +15,19 @@ import org.springframework.data.redis.core.ValueOperations;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class ArticleServiceTest {
@@ -58,7 +67,8 @@ class ArticleServiceTest {
         testPage.setRecords(articles);
         testPage.setTotal(1);
         
-        when(articleService.page(any(), any())).thenReturn(testPage);
+        // Mock the page method directly
+        when(articleService.page(any(Page.class), any())).thenReturn(testPage);
 
         // When
         IPage<Article> result = articleService.getArticlePage(testPage, "published");
@@ -77,7 +87,8 @@ class ArticleServiceTest {
         testPage.setRecords(articles);
         testPage.setTotal(1);
         
-        when(articleService.page(any(), any())).thenReturn(testPage);
+        // Mock the page method directly
+        when(articleService.page(any(Page.class), any())).thenReturn(testPage);
 
         // When
         IPage<Article> result = articleService.getArticlePage(testPage, null);
@@ -201,7 +212,7 @@ class ArticleServiceTest {
 
         // Then
         verify(redisTemplate.opsForValue()).increment("article:view:1");
-        verify(redisTemplate).expire("article:view:1", 1, java.util.concurrent.TimeUnit.HOURS);
+        verify(redisTemplate).expire("article:view:1", 1, TimeUnit.HOURS);
         verify(asyncService).updateStatisticsAsync(1L, "view");
     }
 } 
