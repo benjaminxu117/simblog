@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.entity.Article;
 import com.example.mapper.ArticleMapper;
 import com.example.service.ArticleService;
+import com.example.service.AsyncService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
+    
+    @Autowired
+    private AsyncService asyncService;
     
     @Override
     public IPage<Article> getArticlePage(Page<Article> page, String status) {
@@ -39,7 +43,14 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         article.setViewCount(0);
         article.setLikeCount(0);
         article.setCommentCount(0);
-        return this.save(article);
+        boolean result = this.save(article);
+        
+        if (result) {
+            // 异步生成文章摘要
+            asyncService.generateArticleSummaryAsync(article.getId());
+        }
+        
+        return result;
     }
     
     @Override
@@ -54,8 +65,12 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     
     @Override
     public void incrementViewCount(Long id) {
+        // 使用Redis缓存浏览量，避免频繁更新数据库
         String key = "article:view:" + id;
         redisTemplate.opsForValue().increment(key);
         redisTemplate.expire(key, 1, TimeUnit.HOURS);
+        
+        // 异步更新统计数据
+        asyncService.updateStatisticsAsync(id, "view");
     }
 } 

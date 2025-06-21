@@ -1,1 +1,4 @@
+com\example\service\AsyncServiceTest.class
+com\example\service\ArticleServiceTest.class
+com\example\service\UserServiceTest.class
 com\example\SimblogApplicationTests.class

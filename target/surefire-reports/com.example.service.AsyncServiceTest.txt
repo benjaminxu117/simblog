@@ -1,0 +1,79 @@
+-------------------------------------------------------------------------------
+Test set: com.example.service.AsyncServiceTest
+-------------------------------------------------------------------------------
+Tests run: 9, Failures: 1, Errors: 5, Skipped: 0, Time elapsed: 9.133 s <<< FAILURE! - in com.example.service.AsyncServiceTest
+testSendEmailAsync  Time elapsed: 0 s  <<< ERROR!
+org.mockito.exceptions.misusing.InvalidUseOfMatchersException: 
+
+Misplaced or misused argument matcher detected here:
+
+-> at com.example.service.ArticleServiceTest.testCreateArticle_Success(ArticleServiceTest.java:130)
+
+You cannot use argument matchers outside of verification or stubbing.
+Examples of correct usage of argument matchers:
+    when(mock.get(anyInt())).thenReturn(null);
+    doThrow(new RuntimeException()).when(mock).someVoidMethod(any());
+    verify(mock).someMethod(contains("foo"))
+
+This message may appear after an NullPointerException if the last matcher is returning an object 
+like any() but the stubbed method signature expect a primitive argument, in this case,
+use primitive alternatives.
+    when(mock.get(any())); // bad use, will raise NPE
+    when(mock.get(anyInt())); // correct usage use
+
+Also, this error might show up because you use argument matchers with methods that cannot be mocked.
+Following methods *cannot* be stubbed/verified: final/private/equals()/hashCode().
+Mocking methods declared on non-public parent classes is not supported.
+
+
+testGenerateArticleSummaryAsync  Time elapsed: 2.985 s  <<< ERROR!
+org.mockito.exceptions.misusing.UnnecessaryStubbingException: 
+
+Unnecessary stubbings detected.
+Clean & maintainable test code requires zero unnecessary code.
+Following stubbings are unnecessary (click to navigate to relevant line of code):
+  1. -> at com.example.service.AsyncServiceTest.setUp(AsyncServiceTest.java:36)
+Please remove unnecessary stubbings or use 'lenient' strictness. More info: javadoc for UnnecessaryStubbingException class.
+
+testLogUserActionAsync  Time elapsed: 0.11 s  <<< ERROR!
+org.mockito.exceptions.misusing.UnnecessaryStubbingException: 
+
+Unnecessary stubbings detected.
+Clean & maintainable test code requires zero unnecessary code.
+Following stubbings are unnecessary (click to navigate to relevant line of code):
+  1. -> at com.example.service.AsyncServiceTest.setUp(AsyncServiceTest.java:36)
+Please remove unnecessary stubbings or use 'lenient' strictness. More info: javadoc for UnnecessaryStubbingException class.
+
+testProcessFileUploadAsync  Time elapsed: 1.013 s  <<< ERROR!
+org.mockito.exceptions.misusing.UnnecessaryStubbingException: 
+
+Unnecessary stubbings detected.
+Clean & maintainable test code requires zero unnecessary code.
+Following stubbings are unnecessary (click to navigate to relevant line of code):
+  1. -> at com.example.service.AsyncServiceTest.setUp(AsyncServiceTest.java:36)
+Please remove unnecessary stubbings or use 'lenient' strictness. More info: javadoc for UnnecessaryStubbingException class.
+
+testUpdateStatisticsAsync_UnknownAction  Time elapsed: 0.004 s  <<< FAILURE!
+org.mockito.exceptions.verification.NeverWantedButInvoked: 
+
+redisTemplate.expire(
+    <any string>,
+    <any long>,
+    <any>
+);
+Never wanted here:
+-> at com.example.service.AsyncServiceTest.testUpdateStatisticsAsync_UnknownAction(AsyncServiceTest.java:120)
+But invoked here:
+-> at com.example.service.impl.AsyncServiceImpl.updateStatisticsAsync(AsyncServiceImpl.java:67) with arguments: [article:stats:1:unknown, 24, HOURS]
+
+	at com.example.service.AsyncServiceTest.testUpdateStatisticsAsync_UnknownAction(AsyncServiceTest.java:120)
+
+testCleanExpiredCacheAsync  Time elapsed: 5.009 s  <<< ERROR!
+org.mockito.exceptions.misusing.UnnecessaryStubbingException: 
+
+Unnecessary stubbings detected.
+Clean & maintainable test code requires zero unnecessary code.
+Following stubbings are unnecessary (click to navigate to relevant line of code):
+  1. -> at com.example.service.AsyncServiceTest.setUp(AsyncServiceTest.java:36)
+Please remove unnecessary stubbings or use 'lenient' strictness. More info: javadoc for UnnecessaryStubbingException class.
+
